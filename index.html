@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitaler Liebesexpress – Sendungsverfolgung für Stella ❤️</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                    },
+                    colors: {
+                        rose: {
+                            50: '#fff5f7',
+                            100: '#ffe4e9',
+                            200: '#fecdd6',
+                            300: '#fda4b6',
+                            400: '#fb718e',
+                            500: '#f43f68',
+                            600: '#e11d4f',
+                            700: '#be1241',
+                            800: '#9f123b',
+                            900: '#881337',
+                            950: '#4c0519',
+                        },
+                        gold: {
+                            100: '#fbf5e6',
+                            300: '#edd69c',
+                            500: '#d4af37',
+                            600: '#b89225',
+                        },
+                        cream: '#fdfaf7'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #fdfaf7;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(254, 205, 214, 0.35) 0px, transparent 50%),
+                radial-gradient(at 90% 20%, rgba(251, 245, 230, 0.6) 0px, transparent 50%),
+                radial-gradient(at 50% 90%, rgba(254, 205, 214, 0.25) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #4c0519;
+            overflow-x: hidden;
+        }
+
+        /* Floating Hearts Background Animation */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.7) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.4;
+            }
+            80% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.1) rotate(25deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp linear infinite;
+        }
+
+        /* Delivery Van Animation */
+        @keyframes driveBounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        .animate-van {
+            animation: driveBounce 1.2s ease-in-out infinite;
+        }
+
+        /* Padlock Shake Animation */
+        @keyframes shakeLock {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-12deg); }
+            40% { transform: rotate(12deg); }
+            60% { transform: rotate(-8deg); }
+            80% { transform: rotate(8deg); }
+        }
+        .shake-lock {
+            animation: shakeLock 0.5s ease-in-out;
+        }
+
+        /* Shimmer effect for Gold/Luxury elements */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .gold-shimmer {
+            background: linear-gradient(90deg, #f43f68 0%, #d4af37 50%, #f43f68 100%);
+            background-size: 200% auto;
+            animation: shimmer 6s linear infinite;
+        }
+
+        /* Glassmorphism cards */
+        .luxury-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(254, 205, 214, 0.7);
+            box-shadow: 0 20px 40px -15px rgba(136, 19, 55, 0.07);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative selection:bg-rose-200 selection:text-rose-900">
+
+    <!-- Background Floating Hearts Container -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <!-- Top Navigation / Branding Header -->
+    <header class="relative z-10 border-b border-rose-200/60 bg-white/70 backdrop-blur-md sticky top-0">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center text-white shadow-md shadow-rose-500/20">
+                    <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-serif font-bold text-xl sm:text-2xl tracking-tight text-rose-950">LIEBESEXPRESS</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-gold-100 text-gold-600 border border-gold-300">VIP Priority</span>
+                    </div>
+                    <p class="text-xs text-rose-800/70">Premium Herzens-Logistik & Überraschungs-Service</p>
+                </div>
+            </div>
+
+            <!-- Live Status Pill -->
+            <div class="flex items-center gap-2 bg-rose-50 border border-rose-200 px-3.5 py-1.5 rounded-full text-xs font-semibold text-rose-800">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-600"></span>
+                </span>
+                <span id="header-status-text">In Zustellung an Stella</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
+
+        <!-- Personal Greeting & Tracking Number Bar -->
+        <section class="text-center space-y-4">
+            <div class="inline-flex items-center gap-1.5 text-rose-600 text-sm font-medium bg-rose-100/70 px-4 py-1 rounded-full">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Exklusive Sendungsverfolgung</span>
+            </div>
+            <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-rose-950 leading-tight">
+                Hallo meine liebste <span class="italic text-rose-600 font-normal">Stella</span> ❤️
+            </h1>
+            <p class="text-rose-900/80 max-w-xl mx-auto text-base sm:text-lg">
+                Franz hat eine ganz besondere digitale Überraschung für dich auf die Reise geschickt. Hier kannst du live verfolgen, wann dein Paket bei dir eintrifft!
+            </p>
+
+            <!-- Tracking Code Bar -->
+            <div class="max-w-md mx-auto mt-6 luxury-card rounded-2xl p-2 pl-4 flex items-center justify-between gap-2 shadow-sm">
+                <div class="flex items-center gap-2.5 overflow-hidden">
+                    <i data-lucide="package-check" class="w-5 h-5 text-rose-500 shrink-0"></i>
+                    <div class="text-left truncate">
+                        <span class="block text-[10px] uppercase tracking-wider text-rose-800/60 font-semibold">Sendungsnummer</span>
+                        <span id="tracking-code" class="font-mono text-sm sm:text-base font-bold text-rose-950">LX-STELLA-VIP-❤️</span>
+                    </div>
+                </div>
+                <button onclick="copyTrackingCode()" class="shrink-0 bg-rose-100 hover:bg-rose-200 active:scale-95 text-rose-900 text-xs font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    <span id="copy-btn-text">Kopieren</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Hero Countdown Card -->
+        <section class="luxury-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+            <!-- Decorative corner ribbon -->
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-rose-200/40 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-gold-300/30 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="text-center space-y-6 relative z-10">
+                <div class="space-y-1">
+                    <h2 class="text-xs sm:text-sm font-bold uppercase tracking-widest text-rose-600">Countdown bis zur Enthüllung</h2>
+                    <p id="delivery-date-subtitle" class="font-serif italic text-xl sm:text-2xl text-rose-900">
+                        Voraussichtliche Zustellung: Sonntag um 18:00 Uhr
+                    </p>
+                </div>
+
+                <!-- Countdown Boxes -->
+                <div id="countdown-grid" class="grid grid-cols-4 gap-2.5 sm:gap-5 max-w-2xl mx-auto">
+                    <!-- Days -->
+                    <div class="bg-gradient-to-b from-white to-rose-50/90 border border-rose-200/80 rounded-2xl p-3 sm:p-5 shadow-sm flex flex-col items-center justify-center">
+                        <span id="cd-days" class="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-rose-950 tabular-nums">02</span>
+                        <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-rose-700/70 mt-1">Tage</span>
+                    </div>
+                    <!-- Hours -->
+                    <div class="bg-gradient-to-b from-white to-rose-50/90 border border-rose-200/80 rounded-2xl p-3 sm:p-5 shadow-sm flex flex-col items-center justify-center">
+                        <span id="cd-hours" class="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-rose-950 tabular-nums">19</span>
+                        <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-rose-700/70 mt-1">Stunden</span>
+                    </div>
+                    <!-- Minutes -->
+                    <div class="bg-gradient-to-b from-white to-rose-50/90 border border-rose-200/80 rounded-2xl p-3 sm:p-5 shadow-sm flex flex-col items-center justify-center">
+                        <span id="cd-minutes" class="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-rose-950 tabular-nums">50</span>
+                        <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-rose-700/70 mt-1">Minuten</span>
+                    </div>
+                    <!-- Seconds -->
+                    <div class="bg-gradient-to-b from-white to-rose-50/90 border border-rose-200/80 rounded-2xl p-3 sm:p-5 shadow-sm flex flex-col items-center justify-center relative overflow-hidden">
+                        <span id="cd-seconds" class="font-serif text-3xl sm:text-5xl md:text-6xl font-bold text-rose-600 tabular-nums">00</span>
+                        <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-rose-700/70 mt-1">Sekunden</span>
+                    </div>
+                </div>
+
+                <!-- Animated Delivery Progress Bar -->
+                <div class="max-w-xl mx-auto pt-4 space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-rose-900/80 px-1">
+                        <span class="flex items-center gap-1"><i data-lucide="send" class="w-3.5 h-3.5 text-rose-500"></i> Franz (Donnerstag)</span>
+                        <span id="progress-percentage" class="text-rose-600 font-bold">Unterwegs...</span>
+                        <span class="flex items-center gap-1">Stella (Sonntag, 18:00) <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500 fill-rose-500"></i></span>
+                    </div>
+                    <div class="relative h-3.5 w-full bg-rose-100 rounded-full overflow-hidden border border-rose-200 p-0.5">
+                        <div id="delivery-progress-bar" class="h-full rounded-full gold-shimmer transition-all duration-1000" style="width: 25%;"></div>
+                    </div>
+                    <!-- Cute Express Truck Indicator -->
+                    <div class="flex items-center justify-center gap-2 text-xs text-rose-800/80 pt-1">
+                        <div class="animate-van inline-flex items-center gap-1 bg-rose-100 text-rose-800 px-2.5 py-1 rounded-full font-medium">
+                            <i data-lucide="truck" class="w-3.5 h-3.5 text-rose-600"></i>
+                            <span>Liebesexpress fährt auf Hochtouren</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two-Column Section: Shipment Details & Live Timeline -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
+            
+            <!-- Left Column: Sendungsdetails (5 cols) -->
+            <div class="md:col-span-5 luxury-card rounded-3xl p-6 sm:p-7 flex flex-col justify-between space-y-6">
+                <div class="space-y-5">
+                    <div class="flex items-center gap-2.5 border-b border-rose-100 pb-4">
+                        <div class="p-2 rounded-xl bg-rose-100 text-rose-600">
+                            <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-2xl text-rose-950">Sendungsdetails</h3>
+                    </div>
+
+                    <dl class="space-y-4 text-sm">
+                        <div class="flex justify-between items-start gap-2">
+                            <dt class="text-rose-900/60 font-medium">Empfängerin:</dt>
+                            <dd class="font-bold text-rose-950 text-right flex items-center gap-1">
+                                Stella <span class="text-rose-500">❤️</span>
+                            </dd>
+                        </div>
+                        <div class="flex justify-between items-start gap-2">
+                            <dt class="text-rose-900/60 font-medium">Absender:</dt>
+                            <dd class="font-bold text-rose-950 text-right">Dein Franz</dd>
+                        </div>
+                        <div class="flex justify-between items-start gap-2">
+                            <dt class="text-rose-900/60 font-medium">Versandart:</dt>
+                            <dd class="font-semibold text-rose-800 text-right bg-rose-50 px-2.5 py-0.5 rounded-lg border border-rose-200 text-xs">
+                                VIP Herzens-Express
+                            </dd>
+                        </div>
+                        <div class="flex justify-between items-start gap-2">
+                            <dt class="text-rose-900/60 font-medium">Gewicht:</dt>
+                            <dd class="font-semibold text-rose-950 text-right">100% Pure Zuneigung</dd>
+                        </div>
+                        <div class="flex justify-between items-start gap-2">
+                            <dt class="text-rose-900/60 font-medium">Versicherung:</dt>
+                            <dd class="font-semibold text-gold-600 text-right">Unbezahlbar ✨</dd>
+                        </div>
+                        <div class="pt-2 border-t border-rose-100">
+                            <dt class="text-rose-900/60 font-medium mb-1">Inhalt der Sendung:</dt>
+                            <dd class="italic text-rose-900 bg-rose-50/70 p-3 rounded-xl border border-rose-100 text-xs leading-relaxed">
+                                „Eine streng geheime digitale Überraschung, mit ganz viel Liebe vorbereitet und bis Sonntag um 18:00 Uhr sicher versiegelt.“
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <!-- Playful Peek / Spy Button for Stella -->
+                <div class="pt-2">
+                    <button onclick="openPeekModal()" class="w-full py-3 px-4 rounded-2xl bg-rose-100/90 hover:bg-rose-200/90 active:scale-[0.99] text-rose-900 font-semibold text-xs sm:text-sm transition flex items-center justify-center gap-2 border border-rose-200/80 shadow-sm">
+                        <i data-lucide="eye" class="w-4 h-4 text-rose-600"></i>
+                        <span>Schon mal heimlich spionieren?</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Live Timeline / Sendungsverlauf (7 cols) -->
+            <div class="md:col-span-7 luxury-card rounded-3xl p-6 sm:p-7 space-y-6">
+                <div class="flex items-center justify-between border-b border-rose-100 pb-4">
+                    <div class="flex items-center gap-2.5">
+                        <div class="p-2 rounded-xl bg-rose-100 text-rose-600">
+                            <i data-lucide="map-pin" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-serif font-bold text-2xl text-rose-950">Sendungsverlauf</h3>
+                    </div>
+                    <span class="text-xs font-medium text-rose-700 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-100">Live-Updates</span>
+                </div>
+
+                <!-- Timeline Steps -->
+                <div class="relative pl-6 space-y-7 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-rose-500 before:via-rose-400 before:to-rose-200">
+                    
+                    <!-- Step 1: Done -->
+                    <div class="relative group">
+                        <div class="absolute -left-6 top-1 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-md shadow-rose-500/30 ring-4 ring-white">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="pl-3">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-rose-500">Donnerstag • Erledigt</span>
+                            <h4 class="font-bold text-rose-950 text-base mt-0.5">Sendung im Liebes-Logistikzentrum aufgegeben</h4>
+                            <p class="text-xs sm:text-sm text-rose-900/75 mt-1 leading-relaxed">
+                                Franz hat die Idee verpackt, die Sendungsverfolgung für dich eingerichtet und das Paket auf den Weg geschickt.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Active -->
+                    <div class="relative group">
+                        <div class="absolute -left-6 top-1 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md shadow-rose-600/40 ring-4 ring-rose-100 animate-pulse">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="pl-3 bg-rose-50/80 p-3.5 rounded-2xl border border-rose-200/80">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[11px] font-bold uppercase tracking-wider text-rose-600">Freitag & Samstag • Aktuell</span>
+                                <span class="text-[10px] font-bold bg-rose-200 text-rose-900 px-2 py-0.5 rounded-full">In Arbeit</span>
+                            </div>
+                            <h4 class="font-bold text-rose-950 text-base mt-0.5">Unterwegs im Liebesexpress & Feinschliff</h4>
+                            <p class="text-xs sm:text-sm text-rose-900/80 mt-1 leading-relaxed">
+                                Hinter den Kulissen wird noch fleißig gezaubert! Alle liebevollen Details und Herzklopfen-Momente werden gerade geladen.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Upcoming -->
+                    <div class="relative group opacity-80" id="timeline-step-3">
+                        <div id="timeline-step-3-icon" class="absolute -left-6 top-1 w-6 h-6 rounded-full bg-rose-100 text-rose-500 border-2 border-rose-300 flex items-center justify-center ring-4 ring-white">
+                            <i data-lucide="gift" class="w-3.5 h-3.5"></i>
+                        </div>
+                        <div class="pl-3">
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-rose-800/60">Sonntag, 18:00 Uhr • Ziel</span>
+                            <h4 class="font-bold text-rose-950 text-base mt-0.5">Zustellung an Stella & Öffnung des Geschenk-Tresors</h4>
+                            <p class="text-xs sm:text-sm text-rose-900/75 mt-1 leading-relaxed">
+                                Sobald der Countdown am Sonntag um 18:00 Uhr abläuft, entsperrt sich dein digitales Geschenk automatisch genau hier auf dieser Seite.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Locked Gift Vault Section (Das digitale Geschenk) -->
+        <section id="vault-section" class="luxury-card rounded-3xl p-6 sm:p-10 border-2 border-rose-200/90 relative overflow-hidden text-center">
+            <!-- Locked State View -->
+            <div id="vault-locked-view" class="max-w-lg mx-auto space-y-5 py-4">
+                <div id="padlock-icon-wrapper" class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-rose-100 to-rose-200 border border-rose-300 flex items-center justify-center text-rose-600 shadow-inner cursor-pointer transition hover:scale-105" onclick="triggerLockShake()">
+                    <i data-lucide="lock" class="w-10 h-10"></i>
+                </div>
+                
+                <div class="space-y-2">
+                    <span class="text-xs font-bold uppercase tracking-widest text-gold-600 bg-gold-100 px-3 py-1 rounded-full border border-gold-300">
+                        Streng Geheim Versiegelt
+                    </span>
+                    <h3 class="font-serif text-3xl sm:text-4xl font-bold text-rose-950 pt-1">
+                        Stellas digitaler Geschenk-Tresor
+                    </h3>
+                    <p class="text-sm sm:text-base text-rose-900/75 leading-relaxed">
+                        Dieser Bereich ist noch mit einem Zeitschloss gesichert. Am <strong>Sonntag um 18:00 Uhr</strong> springt das Schloss automatisch auf und enthüllt deine Überraschung von Franz!
+                    </p>
+                </div>
+
+                <div class="pt-2">
+                    <button onclick="triggerLockShake()" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-rose-950/90 hover:bg-rose-950 text-white text-sm font-semibold shadow-lg shadow-rose-950/20 transition active:scale-95">
+                        <i data-lucide="key-round" class="w-4 h-4 text-gold-300"></i>
+                        <span>Am Schloss rütteln</span>
+                    </button>
+                    <p id="lock-shake-feedback" class="text-xs font-medium text-rose-600 mt-3 min-h-[1.25rem] opacity-0 transition-opacity duration-300">
+                        Noch fest verschlossen! Nur noch ein klein wenig Geduld, meine Schöne ❤️
+                    </p>
+                </div>
+            </div>
+
+            <!-- Unlocked / Gift Reveal View (Automatically shown when countdown reaches 0) -->
+            <div id="vault-unlocked-view" class="hidden max-w-2xl mx-auto space-y-6 py-4 animate-fade-in">
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-rose-500 to-rose-600 text-white flex items-center justify-center shadow-xl shadow-rose-500/30 animate-bounce">
+                    <i data-lucide="gift" class="w-10 h-10"></i>
+                </div>
+
+                <div class="space-y-2">
+                    <span class="text-xs font-bold uppercase tracking-widest text-rose-600 bg-rose-100 px-3 py-1 rounded-full">
+                        🎉 Sendung erfolgreich zugestellt!
+                    </span>
+                    <h3 class="font-serif text-3xl sm:text-5xl font-bold text-rose-950">
+                        Für dich, meine Stella ❤️
+                    </h3>
+                    <p class="text-sm sm:text-base text-rose-900/80">
+                        Das Warten hat ein Ende! Hier ist deine digitale Überraschung von deinem Franz:
+                    </p>
+                </div>
+
+                <!-- Placeholder Card where we will build the actual gift next -->
+                <div class="bg-gradient-to-br from-rose-50 via-white to-gold-100/50 p-6 sm:p-8 rounded-3xl border-2 border-dashed border-rose-300 text-left space-y-4 shadow-inner">
+                    <div class="flex items-center gap-3 text-rose-700">
+                        <i data-lucide="sparkles" class="w-6 h-6 shrink-0"></i>
+                        <h4 class="font-serif font-bold text-2xl text-rose-950">Deine Überraschung</h4>
+                    </div>
+                    <p class="text-sm text-rose-900/80 leading-relaxed">
+                        Liebe Stella, hier wird dein Geschenk freigeschaltet! ❤️
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Clean Footer without any secret button for Stella -->
+    <footer class="relative z-10 border-t border-rose-200/50 bg-white/40 backdrop-blur-sm py-6 mt-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 flex items-center justify-center text-xs text-rose-900/60">
+            <p class="flex items-center gap-1.5">
+                Mit unendlich viel <i data-lucide="heart" class="w-3.5 h-3.5 text-rose-500 fill-rose-500 inline"></i> versendet von Franz an Stella • Liebesexpress
+            </p>
+        </div>
+    </footer>
+
+    <!-- Playful "Spionieren / Peek" Modal for Stella -->
+    <div id="peek-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-rose-950/40 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-rose-200 text-center space-y-5 relative animate-fade-in">
+            <button onclick="closePeekModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 flex items-center justify-center transition">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+                <i data-lucide="smile-plus" class="w-8 h-8"></i>
+            </div>
+
+            <div class="space-y-2">
+                <h4 class="font-serif text-2xl sm:text-3xl font-bold text-rose-950">Nanana, meine neugierige Stella! 👀❤️</h4>
+                <p id="peek-hint-text" class="text-sm sm:text-base text-rose-900/80 leading-relaxed">
+                    Erwischt! Du wolltest wohl schon vor Sonntag um 18:00 Uhr spionieren? Ein kleiner Hinweis sei dir verraten: Es kommt von Herzen, ist zu 100% für dich gemacht und verkürzt dir hoffentlich die Wartezeit!
+                </p>
+            </div>
+
+            <div class="bg-rose-50 p-3.5 rounded-2xl border border-rose-100 text-xs text-rose-800 font-medium">
+                🔒 Sicherheitsstufe: Maximal (Nur durch Geduld oder Küsse an Franz bestechlich)
+            </div>
+
+            <button onclick="closePeekModal()" class="w-full py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm shadow-md shadow-rose-600/20 transition">
+                Na gut, ich gedulde mich noch ein bisschen 😘
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Dynamische Berechnung auf den kommenden Sonntag um 18:00:00 Uhr
+        // (Funktioniert unabhängig davon, welches Jahr auf dem Gerät eingestellt ist!)
+        function getUpcomingSunday1800() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            
+            // Falls wir im Oktober sind, nimm den 18. Oktober des aktuellen Geräte-Jahres um 18:00 Uhr:
+            if (now.getMonth() === 9 && now.getDate() <= 18) {
+                const oct18 = new Date(currentYear, 9, 18, 18, 0, 0, 0);
+                if (oct18 > now) {
+                    return {
+                        start: new Date(currentYear, 9, 15, 20, 0, 0, 0),
+                        target: oct18,
+                        label: `Sonntag, 18. Oktober um 18:00 Uhr`
+                    };
+                }
+            }
+
+            // Fallback: Berechne automatisch den nächsten Sonntag um 18:00 Uhr
+            const target = new Date(now);
+            const daysUntilSunday = (7 - now.getDay()) % 7;
+            target.setDate(now.getDate() + (daysUntilSunday === 0 && now.getHours() >= 18 ? 7 : daysUntilSunday));
+            target.setHours(18, 0, 0, 0);
+
+            const start = new Date(target);
+            start.setDate(target.getDate() - 3);
+            start.setHours(20, 0, 0, 0);
+
+            const dateStr = target.toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
+            return {
+                start: start,
+                target: target,
+                label: `Sonntag, ${dateStr} um 18:00 Uhr`
+            };
+        }
+
+        const schedule = getUpcomingSunday1800();
+        const startDate = schedule.start;
+        const targetDate = schedule.target;
+        let isUnlocked = false;
+
+        document.getElementById('delivery-date-subtitle').textContent =
+            `Voraussichtliche Zustellung: ${schedule.label}`;
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                // Countdown abgelaufen -> Tresor öffnen!
+                document.getElementById('cd-days').textContent = '00';
+                document.getElementById('cd-hours').textContent = '00';
+                document.getElementById('cd-minutes').textContent = '00';
+                document.getElementById('cd-seconds').textContent = '00';
+                document.getElementById('delivery-progress-bar').style.width = '100%';
+                document.getElementById('progress-percentage').textContent = '100% – Zugestellt! ❤️';
+                document.getElementById('header-status-text').textContent = 'Zugestellt an Stella ❤️';
+                if (!isUnlocked) {
+                    unlockGiftVault();
+                }
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+            document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+
+            // Fortschrittsbalken berechnen
+            const totalDuration = targetDate - startDate;
+            const elapsed = now - startDate;
+            let percent = Math.floor((elapsed / totalDuration) * 100);
+            percent = Math.max(15, Math.min(99, percent));
+            
+            document.getElementById('delivery-progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-percentage').textContent = `${percent}% des Weges geschafft`;
+        }
+
+        // Start live timer
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Copy tracking number function
+        function copyTrackingCode() {
+            const code = document.getElementById('tracking-code').textContent;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const btnText = document.getElementById('copy-btn-text');
+            btnText.textContent = 'Kopiert! ❤️';
+            setTimeout(() => {
+                btnText.textContent = 'Kopieren';
+            }, 2000);
+        }
+
+        // Shake Padlock Animation & playful message
+        const lockMessages = [
+            "Noch fest verschlossen! Nur noch ein klein wenig Geduld, meine Schöne ❤️",
+            "Das Zeitschloss lässt sich nicht austricksen – Sonntag um 18:00 Uhr ist es soweit! ✨",
+            "Klick, klack... Nein, noch versiegelt! Franz hält den Schlüssel noch versteckt 😘",
+            "Fast geschafft! Die Vorfreude ist doch die schönste Freude ❤️"
+        ];
+        let lockMsgIndex = 0;
+
+        function triggerLockShake() {
+            const wrapper = document.getElementById('padlock-icon-wrapper');
+            const feedback = document.getElementById('lock-shake-feedback');
+            
+            wrapper.classList.remove('shake-lock');
+            void wrapper.offsetWidth; // trigger reflow
+            wrapper.classList.add('shake-lock');
+
+            feedback.textContent = lockMessages[lockMsgIndex % lockMessages.length];
+            lockMsgIndex++;
+            feedback.classList.remove('opacity-0');
+            feedback.classList.add('opacity-100');
+        }
+
+        // Peek Modal controls
+        function openPeekModal() {
+            const modal = document.getElementById('peek-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePeekModal() {
+            const modal = document.getElementById('peek-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function unlockGiftVault() {
+            isUnlocked = true;
+            const lockedView = document.getElementById('vault-locked-view');
+            const unlockedView = document.getElementById('vault-unlocked-view');
+            lockedView.classList.add('hidden');
+            unlockedView.classList.remove('hidden');
+        }
+
+        // Generate subtle floating background hearts
+        function createFloatingHearts() {
+            const container = document.getElementById('hearts-container');
+            const symbols = ['❤️', '✨', '🤍', '🌸'];
+            for (let i = 0; i < 14; i++) {
+                const span = document.createElement('span');
+                span.className = 'floating-heart text-sm sm:text-base select-none';
+                span.textContent = symbols[i % symbols.length];
+                span.style.left = `${Math.random() * 96}%`;
+                span.style.animationDuration = `${14 + Math.random() * 16}s`;
+                span.style.animationDelay = `${Math.random() * 10}s`;
+                container.appendChild(span);
+            }
+        }
+        createFloatingHearts();
+    </script>
+</body>
+</html>
