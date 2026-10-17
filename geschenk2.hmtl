@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Stellas Wiesn-Überraschung 🥨❤️</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        pixel: ['"Press Start 2P"', 'monospace'],
+                    },
+                    colors: {
+                        wiesn: {
+                            blue: '#0066b2',
+                            light: '#e0f2fe',
+                            wood: '#78350f',
+                            gold: '#d4af37'
+                        },
+                        rose: {
+                            50: '#fff5f7',
+                            100: '#ffe4e9',
+                            200: '#fecdd6',
+                            500: '#f43f68',
+                            600: '#e11d4f',
+                            800: '#9f123b',
+                            900: '#881337',
+                            950: '#4c0519',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #fdfaf7;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(0, 102, 178, 0.08) 0px, transparent 50%),
+                radial-gradient(at 85% 20%, rgba(244, 63, 104, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 90%, rgba(212, 175, 55, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #4c0519;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bavarian-border {
+            background: repeating-linear-gradient(
+                45deg,
+                #0066b2,
+                #0066b2 14px,
+                #ffffff 14px,
+                #ffffff 28px
+            );
+        }
+
+        .luxury-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(254, 205, 214, 0.8);
+            box-shadow: 0 20px 40px -15px rgba(136, 19, 55, 0.08);
+        }
+
+        .pixel-canvas {
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            touch-action: none;
+        }
+
+        .scratch-canvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .dpad-btn {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-16">
+
+    <!-- ===================================================================== -->
+    <!-- 🛠 FRANZ' TEST-WERKBANK (Zum Testen & Springen zwischen den Stufen)   -->
+    <!-- Vor Sonntag einfach unten im Script TEST_MODE = false setzen!         -->
+    <!-- ===================================================================== -->
+    <div id="franz-test-bar" class="bg-amber-950 text-amber-100 border-b-2 border-amber-500 px-3 py-2.5 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 font-bold text-amber-300">
+                <i data-lucide="wrench" class="w-4 h-4 shrink-0"></i>
+                <span>FRANZ' TEST-LABOR:</span>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-1.5">
+                <button onclick="jumpToStage(1)" class="px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-700 font-semibold transition">
+                    1. Wiesn-Spiel
+                </button>
+                <button onclick="handleGameWin()" class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-semibold transition">
+                    ⚡ Sofort-Sieg
+                </button>
+                <button onclick="jumpToStage(2)" class="px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-700 font-semibold transition">
+                    2. Zum Quiz
+                </button>
+                <button onclick="showQuizSuccessScreen()" class="px-2.5 py-1 rounded-lg bg-pink-700 hover:bg-pink-600 text-white font-semibold transition">
+                    🏆 Quiz-Sieg (Foto 3)
+                </button>
+                <button onclick="jumpToStage(3)" class="px-2.5 py-1 rounded-lg bg-amber-800 hover:bg-amber-700 font-semibold transition">
+                    3. Rubbellose
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wiesn Header Strip -->
+    <div class="h-3 w-full bavarian-border shadow-xs"></div>
+
+    <main class="max-w-4xl mx-auto px-3 sm:px-6 pt-6 sm:pt-8 space-y-8">
+
+        <!-- Title Header -->
+        <header class="text-center space-y-3">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-100 border border-sky-300 text-sky-900 text-xs font-bold tracking-wider uppercase">
+                <span>🥨 O’zapft is im Liebesexpress! 🍻</span>
+            </div>
+            <h1 class="font-serif text-3xl sm:text-5xl font-bold text-rose-950">
+                Für meine Wiesn-Prinzessin <span class="italic text-rose-600">Stella</span> 👑❤️
+            </h1>
+            <p class="text-xs sm:text-base text-rose-900/80 max-w-xl mx-auto px-2">
+                Meistere unser kleines Oktoberfest-Abenteuer mit unseren Freunden, knacke das Insider-Quiz und rubble deine 3 goldenen Hauptgewinne frei!
+            </p>
+
+            <!-- 3-Stage Progress Indicator -->
+            <div class="grid grid-cols-3 gap-2 max-w-lg mx-auto pt-2 text-[11px] sm:text-xs font-bold">
+                <div id="pill-1" class="py-2.5 px-2 rounded-xl bg-rose-600 text-white shadow-sm flex items-center justify-center gap-1">
+                    <span>🥨 1. Wiesn-Jagd</span>
+                </div>
+                <div id="pill-2" class="py-2.5 px-2 rounded-xl bg-rose-100 text-rose-900/50 flex items-center justify-center gap-1">
+                    <span>❓ 2. Insider-Quiz</span>
+                </div>
+                <div id="pill-3" class="py-2.5 px-2 rounded-xl bg-rose-100 text-rose-900/50 flex items-center justify-center gap-1">
+                    <span>🎟️ 3. Rubbellose</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================================================================= -->
+        <!-- STUFE 1: WIESN PAC-LOVE (OKTOBERFEST EDITION)                     -->
+        <!-- ================================================================= -->
+        <section id="section-stage-1" class="bg-[#23120b] text-amber-50 rounded-3xl p-3.5 sm:p-8 border-4 border-amber-600 shadow-2xl space-y-5 relative overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-2.5 bavarian-border"></div>
+
+            <div class="text-center space-y-2 pt-2">
+                <span class="text-[10px] font-pixel text-sky-300 uppercase tracking-widest block">
+                    Oktoberfest Arcade Special
+                </span>
+                <h2 class="font-pixel text-base sm:text-2xl text-amber-300 tracking-wide">
+                    🥨 WIESN-EXPRESS: STELLA & CREW 🍻
+                </h2>
+                <p class="text-xs sm:text-sm text-amber-100/90 max-w-xl mx-auto leading-relaxed">
+                    Steuere <strong>Prinzessin Stella</strong> vorbei an Riesenrad, Kettenkarussell, Bierzelten, Ochsenbraterei & Räucherfischstand! Weiche <strong>Selina, Magnus, Marie & Robert</strong> aus – oder hol dir <strong>Franz 💚</strong> in den Ecken, um die Geister dauerhaft vom Platz zu fegen!
+                </p>
+            </div>
+
+            <!-- Character Gallery (Nur Bild + Name, ohne Beschreibung!) -->
+            <div class="bg-black/35 rounded-2xl p-3 sm:p-4 border border-amber-500/30">
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5 text-center">
+                    <div class="flex flex-col items-center gap-1.5 bg-white/5 p-2 rounded-xl border border-emerald-400/40">
+                        <canvas id="preview-stella" width="48" height="48" class="w-11 h-11 sm:w-12 sm:h-12 pixel-canvas bg-black/40 rounded-lg p-1"></canvas>
+                        <span class="font-bold text-xs text-emerald-300">Stella 👑</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 bg-white/5 p-2 rounded-xl border border-rose-400/40">
+                        <canvas id="preview-franz" width="48" height="48" class="w-11 h-11 sm:w-12 sm:h-12 pixel-canvas bg-black/40 rounded-lg p-1"></canvas>
+                        <span class="font-bold text-xs text-rose-300">Franz ❤️</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 bg-white/5 p-2 rounded-xl border border-white/10">
+                        <canvas id="preview-selina" width="48" height="48" class="w-11 h-11 sm:w-12 sm:h-12 pixel-canvas bg-black/40 rounded-lg p-1"></canvas>
+                        <span class="font-bold text-xs text-lime-300">Selina</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 bg-white/5 p-2 rounded-xl border border-white/10">
+                        <canvas id="preview-magnus" width="48" height="48" class="w-11 h-11 sm:w-12 sm:h-12 pixel-canvas bg-black/40 rounded-lg p-1"></canvas>
+                        <span class="font-bold text-xs text-blue-300">Magnus</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 bg-white/5 p-2 rounded-xl border border-white/10">
+                        <canvas id="preview-marie" width="48" height="48" class="w-11 h-11 sm:w-12 sm:h-12 pixel-canvas bg-black/40 rounded-lg p-1"></canvas>
+                        <span class="font-bold text-xs text-sky-300">Marie</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 bg-white/5 p-2 rounded-xl border border-white/10">
+                        <canvas id="preview-robert" width="48" height="48" class="w-11 h-11 sm:w-12 sm:h-12 pixel-canvas bg-black/40 rounded-lg p-1"></canvas>
+                        <span class="font-bold text-xs text-amber-300">Robert</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wiesn Stall Legend -->
+            <div class="flex flex-wrap items-center justify-center gap-2 text-[10px] sm:text-xs text-amber-200/90 bg-black/25 py-2 px-3 rounded-xl border border-amber-500/20">
+                <span class="px-2 py-0.5 rounded bg-amber-900/60">🎡 Riesenrad</span>
+                <span class="px-2 py-0.5 rounded bg-amber-900/60">🎠 Kettenkarussell</span>
+                <span class="px-2 py-0.5 rounded bg-amber-900/60">🍺 Bierzelte</span>
+                <span class="px-2 py-0.5 rounded bg-amber-900/60">🐂 Ochsenbraterei</span>
+                <span class="px-2 py-0.5 rounded bg-amber-900/60">🐟 Räucherfisch</span>
+                <span class="px-2 py-0.5 rounded bg-amber-900/60">🥫 Büchsenwerfen</span>
+            </div>
+
+            <!-- HUD Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-2 max-w-[450px] mx-auto px-3.5 py-2.5 bg-black/60 rounded-xl border border-amber-500/40 font-pixel text-[10px] sm:text-[11px]">
+                <div class="flex items-center gap-1 text-rose-300">
+                    <span>HERZAL:</span>
+                    <span id="hud-lives" class="text-rose-500 text-xs sm:text-sm">❤️❤️❤️</span>
+                </div>
+                <div id="hud-power" class="hidden text-emerald-400 animate-pulse">
+                    🍻 FRANZ-BOOST!
+                </div>
+                <div class="text-amber-300">
+                    BREZN: <span id="hud-dots">0</span>/<span id="hud-total-dots">0</span>
+                </div>
+            </div>
+
+            <!-- Game Canvas Container (15x15 Tiles à 30px = 450x450) -->
+            <div class="relative w-full max-w-[450px] mx-auto aspect-square bg-[#24130c] rounded-2xl overflow-hidden border-4 border-amber-500 shadow-inner">
+                <canvas id="wiesn-canvas" width="450" height="450" class="w-full h-full pixel-canvas block"></canvas>
+
+                <!-- Start / Win / Lose Overlay -->
+                <div id="game-overlay" class="absolute inset-0 bg-black/80 backdrop-blur-xs flex flex-col items-center justify-center p-5 text-center space-y-4">
+                    <div class="text-4xl">👑🥨🎡</div>
+                    <h3 id="overlay-title" class="font-pixel text-sm sm:text-lg text-amber-300 leading-snug">
+                        AUF GEHT'S ZUR WIESN!
+                    </h3>
+                    <p id="overlay-subtitle" class="text-xs text-amber-100/90 max-w-xs leading-relaxed">
+                        Sammle alle Brezn! Wenn du Franz in den Ecken abholst, kannst du Selina, Magnus, Marie & Robert vernaschen – und sie spawnen nicht mehr neu!
+                    </p>
+                    <button onclick="startWiesnGame()" id="overlay-btn" class="px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-pixel text-xs shadow-lg active:scale-95 transition">
+                        O'ZAPFT IS! (START) ▶
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile-First Controls (Extra große Touch-Buttons + Wisch-Steuerung) -->
+            <div class="max-w-xs mx-auto space-y-2 text-center">
+                <div class="grid grid-cols-3 gap-2.5 w-52 mx-auto select-none">
+                    <div></div>
+                    <button onpointerdown="handleTouchDir(event, 0, -1)" class="dpad-btn bg-amber-800 hover:bg-amber-700 active:bg-amber-500 active:scale-95 text-white py-3.5 rounded-2xl flex items-center justify-center border-2 border-amber-400/50 shadow-md">
+                        <i data-lucide="chevron-up" class="w-7 h-7"></i>
+                    </button>
+                    <div></div>
+                    <button onpointerdown="handleTouchDir(event, -1, 0)" class="dpad-btn bg-amber-800 hover:bg-amber-700 active:bg-amber-500 active:scale-95 text-white py-3.5 rounded-2xl flex items-center justify-center border-2 border-amber-400/50 shadow-md">
+                        <i data-lucide="chevron-left" class="w-7 h-7"></i>
+                    </button>
+                    <button onpointerdown="handleTouchDir(event, 0, 1)" class="dpad-btn bg-amber-800 hover:bg-amber-700 active:bg-amber-500 active:scale-95 text-white py-3.5 rounded-2xl flex items-center justify-center border-2 border-amber-400/50 shadow-md">
+                        <i data-lucide="chevron-down" class="w-7 h-7"></i>
+                    </button>
+                    <button onpointerdown="handleTouchDir(event, 1, 0)" class="dpad-btn bg-amber-800 hover:bg-amber-700 active:bg-amber-500 active:scale-95 text-white py-3.5 rounded-2xl flex items-center justify-center border-2 border-amber-400/50 shadow-md">
+                        <i data-lucide="chevron-right" class="w-7 h-7"></i>
+                    </button>
+                </div>
+                <p class="text-[11px] text-amber-200/75">
+                    Am Handy: Einfach auf dem Spielfeld wischen oder Steuerkreuz antippen!
+                </p>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- STUFE 2: DAS INSIDER-QUIZ (MIT FOTO 1, FOTO 2 & SIEGER-FOTO 3)    -->
+        <!-- ================================================================= -->
+        <section id="section-stage-2" class="hidden luxury-card rounded-3xl p-5 sm:p-10 space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-rose-200 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-rose-600 text-white flex items-center justify-center font-bold text-lg shadow">
+                        2
+                    </div>
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-rose-600">Wiesn-Level gemeistert!</span>
+                        <h2 class="font-serif text-2xl sm:text-3xl font-bold text-rose-950">Das Franz & Stella Quiz</h2>
+                    </div>
+                </div>
+                <span id="quiz-badge" class="text-xs font-bold bg-rose-100 text-rose-800 px-3.5 py-1.5 rounded-full border border-rose-200">
+                    Frage 1 / 4
+                </span>
+            </div>
+
+            <!-- Active Question Container -->
+            <div id="quiz-active-box" class="space-y-5">
+                <h3 id="quiz-question" class="font-serif text-2xl sm:text-3xl font-bold text-rose-950 leading-snug"></h3>
+
+                <!-- Optional Photo Box for Questions 3 & 4 -->
+                <div id="quiz-photo-wrapper" class="hidden max-w-sm mx-auto">
+                    <div class="rounded-2xl overflow-hidden border-4 border-rose-200 shadow-md bg-rose-50">
+                        <img id="quiz-photo-img" src="" alt="Quiz Foto" class="w-full max-h-80 object-cover mx-auto">
+                    </div>
+                </div>
+
+                <div id="quiz-options" class="space-y-3"></div>
+                <div id="quiz-feedback" class="hidden p-4 rounded-2xl text-xs sm:text-sm font-semibold"></div>
+                <button id="quiz-next-btn" onclick="nextQuizStep()" class="hidden w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-md transition">
+                    Weiter zur nächsten Frage →
+                </button>
+            </div>
+
+            <!-- Quiz Victory Screen with Photo 3 ("Glückwunsch, du hast es geschafft!") -->
+            <div id="quiz-victory-box" class="hidden text-center space-y-6 py-4">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+                    🎉 Alle 4 Fragen richtig beantwortet!
+                </div>
+                <h3 class="font-serif text-3xl sm:text-5xl font-bold text-rose-950">
+                    Glückwunsch, du hast es geschafft! ❤️
+                </h3>
+                <div class="max-w-md mx-auto rounded-3xl overflow-hidden border-4 border-amber-300 shadow-xl bg-rose-50">
+                    <img id="quiz-victory-img" src="foto3.jpg" alt="Glückwunsch Foto" class="w-full max-h-96 object-cover mx-auto" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80'">
+                </div>
+                <button onclick="unlockStage3ScratchCards()" class="w-full max-w-md mx-auto py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold text-base shadow-lg active:scale-95 transition block">
+                    ✨ Jetzt deine 3 Goldenen Rubbellose freischalten! →
+                </button>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- STUFE 3: DIE 3 GOLDENEN RUBBELLOSE                                -->
+        <!-- ================================================================= -->
+        <section id="section-stage-3" class="hidden luxury-card rounded-3xl p-5 sm:p-10 space-y-8 text-center">
+            <div class="space-y-2">
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-100 px-3.5 py-1 rounded-full border border-amber-300">
+                    🎉 Hauptgewinne Freigeschaltet!
+                </span>
+                <h2 class="font-serif text-3xl sm:text-5xl font-bold text-rose-950 pt-1">
+                    Deine 3 Goldenen Rubbellose ✨
+                </h2>
+                <p class="text-xs sm:text-sm text-rose-900/80 max-w-lg mx-auto">
+                    Rubble die goldenen Schichten direkt mit deinem Finger (oder der Maus) frei, um deine Überraschungen zu enthüllen!
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Los 1 -->
+                <div class="bg-white rounded-3xl p-4 border-2 border-amber-300 shadow-lg flex flex-col justify-between space-y-3">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full self-center">
+                        Los #1 • Schmankerl
+                    </span>
+                    <div class="relative w-full h-48 rounded-2xl overflow-hidden border border-rose-200 bg-gradient-to-br from-rose-50 to-amber-50 flex flex-col items-center justify-center p-4 text-center select-none">
+                        <div class="text-3xl mb-1">🍝🍷✨</div>
+                        <h4 class="font-serif font-bold text-xl text-rose-950">Privat-Dinner bei Chez Franz</h4>
+                        <p class="text-xs text-rose-800/80 mt-1 leading-relaxed">
+                            Dein absolutes Lieblingsessen frisch gekocht, Getränke-Service auf der Couch & 0% Abwasch!
+                        </p>
+                        <canvas id="scratch-1" class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- Los 2 (Mit Erweiterungsfunktion & Happy End) -->
+                <div class="bg-white rounded-3xl p-4 border-2 border-amber-300 shadow-lg flex flex-col justify-between space-y-3">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full self-center">
+                        Los #2 • Verwöhnprogramm
+                    </span>
+                    <div class="relative w-full h-48 rounded-2xl overflow-hidden border border-rose-200 bg-gradient-to-br from-rose-50 to-amber-50 flex flex-col items-center justify-center p-4 text-center select-none">
+                        <div class="text-3xl mb-1">💆🏼‍♀️🕯️👑</div>
+                        <h4 class="font-serif font-bold text-xl text-rose-950">30 Min. Prinzessinnen-Massage</h4>
+                        <p class="text-xs text-rose-800/80 mt-1 leading-relaxed">
+                            Exklusive Verwöhn-Massage von Franz – inklusive möglicher Erweiterungsfunktion mit Happy End! 😉❤️
+                        </p>
+                        <canvas id="scratch-2" class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- Los 3 (Überraschungsdate für meine Prinzessin) -->
+                <div class="bg-white rounded-3xl p-4 border-2 border-amber-300 shadow-lg flex flex-col justify-between space-y-3">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full self-center">
+                        Los #3 • Gemeinsame Zeit
+                    </span>
+                    <div class="relative w-full h-48 rounded-2xl overflow-hidden border border-rose-200 bg-gradient-to-br from-rose-50 to-amber-50 flex flex-col items-center justify-center p-4 text-center select-none">
+                        <div class="text-3xl mb-1">👑🌅🥂</div>
+                        <h4 class="font-serif font-bold text-xl text-rose-950">Überraschungsdate für meine Prinzessin</h4>
+                        <p class="text-xs text-rose-800/80 mt-1 leading-relaxed">
+                            Ein wunderschönes Überraschungsdate ganz für dich allein – geht zu 100% auf deinen Franz!
+                        </p>
+                        <canvas id="scratch-3" class="scratch-canvas absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-rose-50 border border-rose-200 max-w-xl mx-auto space-y-1">
+                <p class="font-serif italic text-2xl text-rose-950">
+                    „Ich liebe dich über alles, meine Prinzessin Stella!“
+                </p>
+                <p class="text-xs font-bold uppercase tracking-widest text-rose-600">— Dein Franz ❤️</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // ====================================================================
+        // KONFIGURATION FÜR FRANZ:
+        // Solange TEST_MODE = true ist, siehst du oben die braune Test-Leiste.
+        // Vor Sonntag stellst du einfach TEST_MODE = false ein!
+        // ====================================================================
+        const TEST_MODE = true;
+        if (!TEST_MODE) {
+            document.getElementById('franz-test-bar').classList.add('hidden');
+        }
+
+        function jumpToStage(stageNum) {
+            if (stageNum === 1) {
+                document.getElementById('section-stage-1').scrollIntoView({ behavior: 'smooth' });
+            } else if (stageNum === 2) {
+                unlockStage2Quiz();
+            } else if (stageNum === 3) {
+                unlockStage2Quiz();
+                unlockStage3ScratchCards();
+            }
+        }
+
+        // ====================================================================
+        // 1. 16x16 PIXEL ART SPRITES (STELLA, FRANZ, SELINA, MAGNUS, MARIE, ROBERT)
+        // ====================================================================
+        const PALETTE = {
+            '.': null,
+            'Y': '#facc15', // Goldene Krone
+            'B': '#fde047', // Blondes Haar (Stella & Robert Locken)
+            'C': '#ca8a04', // Dunkelblonde Locken-Schattierung (Robert)
+            'R': '#e11d48', // Rubinrot / Herz / Mund
+            'S': '#fed7aa', // Hautfarbe
+            'G': '#16a34a', // Grüne Augen (Stella & Franz) & Grünes Dirndl (Stella & Selina)
+            'J': '#15803d', // Dunkelgrünes Dirndl-Mieder Schattierung
+            'E': '#2563eb', // Blaue Augen (Magnus)
+            'A': '#0284c7', // Blaues Dirndl (Marie)
+            'K': '#0f172a', // Tiefschwarze Haare & dunkle Sonnenbrille (Selina)
+            'Z': '#334155', // Sonnenbrillen-Glanz (Selina)
+            'D': '#271c19', // Dunkelbraune Haare (Franz, Magnus, Marie)
+            'W': '#ffffff', // Weiß (Dirndlbluse, Schürze, Trachtenhemd, Socken)
+            'L': '#78350f', // Braune Lederhose + Hosenträger (Jungs)
+            'H': '#b45309', // Hellbraunes Leder / Stickerei
+            'T': '#15803d'  // Trachten-Strümpfe
+        };
+
+        const SPRITES = {
+            // 👑 Prinzessin Stella: Zierlicher, schmale Taille, Krone, blond, grüne Augen, GRÜNES Dirndl
+            stella: [
+                ".....Y..Y..Y....",
+                "....YYYYYYYYY...",
+                "....YYYRYYYYY...",
+                "....BBBBBBBBB...",
+                "...BBSSSSSSSBB..",
+                "...BSSGS.SGSSB..",
+                "...BSSSSSSSSSB..",
+                "...BSSSSSRSSSB..",
+                "....WWGGGGGWW...",
+                ".....WJGGGGJW...",
+                "......GGWWGG....", // Schmale Taille!
+                ".....GGGWWGGG...",
+                "....GGGWWWWGGG..",
+                "....GGGGGGGGGG..",
+                ".....SS....SS...",
+                ".....GG....GG..."
+            ],
+            // 💚 Franz: Etwas kleiner/kompakter, dunkle Haare, grüne Augen, Lederhose & Herz
+            franz: [
+                "......RR.RR.....",
+                ".....RRRRRRR....",
+                "......RRRRR.....",
+                ".......RRR......",
+                "....DDDDDDDD....",
+                "...DDDDDDDDDD...",
+                "...DDSSSSSSDD...",
+                "...DSSGS.SGSD...",
+                "....SSSSSSSS....",
+                "...WWLWWWWLWW...",
+                "...WWLLLLLLWW...",
+                "....LLLLLLLL....",
+                "....LLH..HLL....",
+                "....SS....SS....",
+                "....WW....WW....",
+                "....LL....LL...."
+            ],
+            // 😎 Selina (ersetzt Arne): Lange schwarze Haare, dunkle Sonnenbrille, GRÜNES Dirndl, schmale Taille
+            selina: [
+                "................",
+                "....KKKKKKKK....",
+                "...KKKKKKKKKK...",
+                "...KKSSSSSSKK...",
+                "..KKKKKKKKKKKK..", // Dunkle Sonnenbrille
+                "..KKKZZKKZZKKK..", // Dunkle Gläser
+                "..KKSSSSSSSSKK..",
+                "..KKSSSSSRSSKK..",
+                "..KKWWGGGGGWKK..",
+                "...KWJGGGGJWK...",
+                ".....GGWWGG.....", // Schmale Taille!
+                "....GGGWWGGG....",
+                "...GGGGWWWWGGG..",
+                "...GGGGGGGGGGG..",
+                ".....SS....SS...",
+                ".....GG....GG..."
+            ],
+            // 💙 Magnus: Groß, KURZE dunkle Haare, blaue Augen, Lederhose
+            magnus: [
+                "...DDDDDDDDDD...",
+                "...DDDDDDDDDD...", // Kurze Haare (keine Strähnen an den Seiten)
+                "...SSSSSSSSSS...",
+                "...SSSES.SESS...",
+                "...SSSSSSSSSS...",
+                "....SSSSSSSS....",
+                "..WWWLWWWWLWWW..",
+                "..WWWLLLLLLWWW..",
+                "..WWWLLLLLLWWW..",
+                "...WWLLLLLLWW...",
+                "....LLLLLLLL....",
+                "....LLL..LLL....",
+                "....LLL..LLL....",
+                "....SS....SS....",
+                "....TT....TT....",
+                "....LL....LL...."
+            ],
+            // 💙 Marie: Lange dunkle Haare, BLAUES Dirndl, schmale Taille & zierlicher
+            marie: [
+                "................",
+                "....DDDDDDDD....",
+                "...DDDDDDDDDD...",
+                "...DDSSSSSSDD...",
+                "..DDSSKSSKSSDD..",
+                "..DDDSSSSSSDDD..",
+                "..DDDSSSRSSDDD..",
+                "...DWWAAAAAWWD..",
+                "....WWAAAAAWW...",
+                ".....AAWWAA.....", // Schmale Taille!
+                "....AAAWWAAA....",
+                "...AAAAWWWWAAA..",
+                "...AAAAAAAAAAA..",
+                ".....SS....SS...",
+                ".....AA....AA...",
+                "................"
+            ],
+            // 👱‍♂️ Robert: Blonde dünne Locken, Lederhose
+            robert: [
+                "...B..C..B..C...",
+                "..BC.CB.BC.CB...",
+                "...CBBCBBCBBC...",
+                "...BBSSSSSSBB...",
+                "..B.SSKSSKSS.B..",
+                "....SSSSSSSS....",
+                "....SSSRSSSS....",
+                "...WWLWWWWLWW...",
+                "..WWWLLLLLLWWW..",
+                "...WWLLLLLLWW...",
+                "....LLLLLLLL....",
+                "....LLH..HLL....",
+                "....LLL..LLL....",
+                "....SS....SS....",
+                "....WW....WW....",
+                "....LL....LL...."
+            ]
+        };
+
+        function drawSprite(ctx, key, x, y, size, scared = false) {
+            const matrix = SPRITES[key];
+            if (!matrix) return;
+            const pxSize = size / 16;
+
+            for (let r = 0; r < 16; r++) {
+                const row = matrix[r];
+                for (let c = 0; c < 16; c++) {
+                    const ch = row[c];
+                    if (ch === '.') continue;
+                    if (scared) {
+                        ctx.fillStyle = (ch === 'S' || ch === 'W') ? '#ffffff' : '#38bdf8';
+                    } else {
+                        ctx.fillStyle = PALETTE[ch] || '#ffffff';
+                    }
+                    ctx.fillRect(
+                        Math.floor(x + c * pxSize),
+                        Math.floor(y + r * pxSize),
+                        Math.ceil(pxSize),
+                        Math.ceil(pxSize)
+                    );
+                }
+            }
+        }
+
+        function renderAllPreviews() {
+            ['stella', 'franz', 'selina', 'magnus', 'marie', 'robert'].forEach(k => {
+                const c = document.getElementById(`preview-${k}`);
+                if (!c) return;
+                const ctx = c.getContext('2d');
+                ctx.clearRect(0, 0, c.width, c.height);
+                drawSprite(ctx, k, 4, 4, 40, false);
+            });
+        }
+
+        // ====================================================================
+        // 2. FLÜSSIGES 60-FPS OKTOBERFEST-SPIEL MIT VIELFÄLTIGEN STÄNDEN
+        // ====================================================================
+        // 1 = Stand/Attraktion, 0 = Brezn, 2 = Franz Power-Up, 3 = Frei
+        const WIESN_MAP = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,0,0,0,0,0,1,0,0,0,0,0,2,1],
+            [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+            [1,0,1,1,0,1,0,0,0,1,0,1,1,0,1],
+            [1,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,1,1,0,1,1,0,1],
+            [1,0,0,0,0,0,3,3,3,0,0,0,0,0,1],
+            [1,1,1,0,1,3,3,3,3,3,1,0,1,1,1],
+            [1,0,0,0,0,0,3,3,3,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,1,1,0,1,1,0,1],
+            [1,0,0,0,0,0,0,3,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+            [1,0,1,1,0,1,0,1,0,1,0,1,1,0,1],
+            [1,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        const GRID = 15;
+        const TILE = 30; // 15 * 30 = 450px
+        let map = [];
+        let totalDots = 0;
+        let collectedDots = 0;
+        let lives = 3;
+        let powerTimeLeft = 0; // in seconds
+        let rafId = null;
+        let lastFrameTime = 0;
+        let isPlaying = false;
+
+        // Smooth floating coordinates (x, y in grid units)
+        let stella = { x: 7, y: 10, dx: 0, dy: 0, nextDx: 0, nextDy: 0, speed: 4.5 };
+        let friends = [];
+
+        function initFriends(keepEatenState = false) {
+            const eatenMap = {};
+            if (keepEatenState) {
+                friends.forEach(f => { eatenMap[f.key] = f.eaten; });
+            }
+            friends = [
+                { key: 'selina', name: 'Selina', x: 6, y: 7, dx: 0, dy: -1, speed: 3.1, eaten: !!eatenMap['selina'] },
+                { key: 'magnus', name: 'Magnus', x: 7, y: 7, dx: 0, dy: -1, speed: 3.1, eaten: !!eatenMap['magnus'] },
+                { key: 'marie',  name: 'Marie',  x: 8, y: 7, dx: 0, dy: -1, speed: 3.1, eaten: !!eatenMap['marie'] },
+                { key: 'robert', name: 'Robert', x: 7, y: 6, dx: 1, dy: 0,  speed: 3.1, eaten: !!eatenMap['robert'] }
+            ];
+        }
+
+        function resetPositionsAfterHit() {
+            stella = { x: 7, y: 10, dx: 0, dy: 0, nextDx: 0, nextDy: 0, speed: 4.5 };
+            // Wichtig: Bereits gefressene Geister bleiben verschwunden (keepEatenState = true)!
+            initFriends(true);
+        }
+
+        function initWiesnBoard() {
+            map = WIESN_MAP.map(r => [...r]);
+            totalDots = 0;
+            collectedDots = 0;
+            for (let r = 0; r < GRID; r++) {
+                for (let c = 0; c < GRID; c++) {
+                    if (map[r][c] === 0 || map[r][c] === 2) totalDots++;
+                }
+            }
+            document.getElementById('hud-dots').textContent = '0';
+            document.getElementById('hud-total-dots').textContent = totalDots;
+            stella = { x: 7, y: 10, dx: 0, dy: 0, nextDx: 0, nextDy: 0, speed: 4.5 };
+            initFriends(false);
+            drawWiesnGame(performance.now());
+        }
+
+        function startWiesnGame() {
+            document.getElementById('game-overlay').classList.add('hidden');
+            lives = 3;
+            powerTimeLeft = 0;
+            updateGameHud();
+            initWiesnBoard();
+            isPlaying = true;
+            lastFrameTime = performance.now();
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(gameLoop);
+        }
+
+        function setPlayerDir(dx, dy) {
+            stella.nextDx = dx;
+            stella.nextDy = dy;
+            // Sofortiger Richtungswechsel, wenn genau entgegengesetzt
+            if (stella.dx === -dx && stella.dy === -dy) {
+                stella.dx = dx;
+                stella.dy = dy;
+            }
+        }
+
+        function handleTouchDir(e, dx, dy) {
+            if (e) e.preventDefault();
+            setPlayerDir(dx, dy);
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (!isPlaying) return;
+            if (['ArrowUp', 'KeyW'].includes(e.code)) { setPlayerDir(0, -1); e.preventDefault(); }
+            if (['ArrowDown', 'KeyS'].includes(e.code)) { setPlayerDir(0, 1); e.preventDefault(); }
+            if (['ArrowLeft', 'KeyA'].includes(e.code)) { setPlayerDir(-1, 0); e.preventDefault(); }
+            if (['ArrowRight', 'KeyD'].includes(e.code)) { setPlayerDir(1, 0); e.preventDefault(); }
+        });
+
+        // Flüssige Touch-Wisch-Steuerung direkt auf dem Spielfeld (ohne Verzögerung!)
+        const wiesnCanvas = document.getElementById('wiesn-canvas');
+        let tStartX = 0, tStartY = 0;
+        wiesnCanvas.addEventListener('touchstart', (e) => {
+            tStartX = e.touches[0].clientX;
+            tStartY = e.touches[0].clientY;
+        }, { passive: false });
+
+        wiesnCanvas.addEventListener('touchmove', (e) => {
+            if (!isPlaying) return;
+            e.preventDefault(); // Verhindert Scrollen der Seite beim Wischen im Spiel
+            const dx = e.touches[0].clientX - tStartX;
+            const dy = e.touches[0].clientY - tStartY;
+            if (Math.hypot(dx, dy) > 14) {
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    setPlayerDir(dx > 0 ? 1 : -1, 0);
+                } else {
+                    setPlayerDir(0, dy > 0 ? 1 : -1);
+                }
+                tStartX = e.touches[0].clientX;
+                tStartY = e.touches[0].clientY;
+            }
+        }, { passive: false });
+
+        function isWalkable(gx, gy) {
+            return gx >= 0 && gx < GRID && gy >= 0 && gy < GRID && map[gy][gx] !== 1;
+        }
+
+        function moveEntitySmooth(entity, dt, isPlayer) {
+            const speed = (!isPlayer && powerTimeLeft > 0) ? entity.speed * 0.62 : entity.speed;
+            const step = speed * dt;
+
+            const centerX = Math.round(entity.x);
+            const centerY = Math.round(entity.y);
+            const distToCenter = Math.hypot(entity.x - centerX, entity.y - centerY);
+
+            // Am Knotenpunkt: Richtungswechsel prüfen
+            if (distToCenter < 0.22) {
+                if (isPlayer) {
+                    if ((entity.nextDx !== 0 || entity.nextDy !== 0) &&
+                        (entity.nextDx !== entity.dx || entity.nextDy !== entity.dy) &&
+                        isWalkable(centerX + entity.nextDx, centerY + entity.nextDy)) {
+                        entity.x = centerX;
+                        entity.y = centerY;
+                        entity.dx = entity.nextDx;
+                        entity.dy = entity.nextDy;
+                    }
+                } else {
+                    // KI-Entscheidung für Selina, Magnus, Marie & Robert (nur 1x pro Knotenpunkt)
+                    if (entity.lastTurnTileX !== centerX || entity.lastTurnTileY !== centerY) {
+                        entity.lastTurnTileX = centerX;
+                        entity.lastTurnTileY = centerY;
+
+                        const dirs = [{dx:0,dy:-1},{dx:0,dy:1},{dx:-1,dy:0},{dx:1,dy:0}];
+                        let valid = dirs.filter(d => isWalkable(centerX + d.dx, centerY + d.dy));
+                        if (valid.length > 1) {
+                            valid = valid.filter(d => !(d.dx === -entity.dx && d.dy === -entity.dy));
+                        }
+                        if (valid.length > 0) {
+                            let pick;
+                            if (powerTimeLeft > 0) {
+                                // Fliehen vor Stella
+                                valid.sort((a, b) => Math.hypot((centerX+b.dx)-stella.x, (centerY+b.dy)-stella.y) - Math.hypot((centerX+a.dx)-stella.x, (centerY+a.dy)-stella.y));
+                                pick = valid[0];
+                            } else if (Math.random() < 0.45) {
+                                // Verfolgen
+                                valid.sort((a, b) => Math.hypot((centerX+a.dx)-stella.x, (centerY+a.dy)-stella.y) - Math.hypot((centerX+b.dx)-stella.x, (centerY+b.dy)-stella.y));
+                                pick = valid[0];
+                            } else {
+                                pick = valid[Math.floor(Math.random() * valid.length)];
+                            }
+                            entity.x = centerX;
+                            entity.y = centerY;
+                            entity.dx = pick.dx;
+                            entity.dy = pick.dy;
+                        }
+                    }
+                }
+            }
+
+            // Vorwärts bewegen, sofern keine Bude im Weg steht
+            const nextX = entity.x + entity.dx * step;
+            const nextY = entity.y + entity.dy * step;
+            const checkTileX = Math.round(nextX + entity.dx * 0.38);
+            const checkTileY = Math.round(nextY + entity.dy * 0.38);
+
+            if (isWalkable(checkTileX, checkTileY)) {
+                entity.x = nextX;
+                entity.y = nextY;
+                // Sanft auf die Spur zentrieren
+                if (entity.dx !== 0) entity.y += (centerY - entity.y) * 0.35;
+                if (entity.dy !== 0) entity.x += (centerX - entity.x) * 0.35;
+            } else {
+                entity.x = centerX;
+                entity.y = centerY;
+                if (!isPlayer) {
+                    entity.lastTurnTileX = -1;
+                }
+            }
+        }
+
+        function gameLoop(timestamp) {
+            if (!isPlaying) return;
+            const dt = Math.min(0.05, (timestamp - lastFrameTime) / 1000);
+            lastFrameTime = timestamp;
+
+            if (powerTimeLeft > 0) {
+                powerTimeLeft = Math.max(0, powerTimeLeft - dt);
+                document.getElementById('hud-power').classList.toggle('hidden', powerTimeLeft <= 0);
+            }
+
+            // 1. Stella bewegen
+            moveEntitySmooth(stella, dt, true);
+
+            // 2. Brezn & Franz-Power-Up einsammeln
+            const gx = Math.round(stella.x);
+            const gy = Math.round(stella.y);
+            const tile = map[gy]?.[gx];
+            if (tile === 0 || tile === 2) {
+                map[gy][gx] = 3;
+                collectedDots++;
+                if (tile === 2) {
+                    powerTimeLeft = 8.0; // 8 Sekunden Franz-Boost!
+                    document.getElementById('hud-power').classList.remove('hidden');
+                }
+                updateGameHud();
+
+                if (collectedDots >= totalDots) {
+                    handleGameWin();
+                    return;
+                }
+            }
+
+            // 3. Freunde bewegen (nur die, die noch nicht gefressen wurden!)
+            for (let f of friends) {
+                if (f.eaten) continue;
+                moveEntitySmooth(f, dt, false);
+
+                // Kollisionsprüfung
+                if (Math.hypot(f.x - stella.x, f.y - stella.y) < 0.65) {
+                    if (powerTimeLeft > 0) {
+                        // Geist dauerhaft gefressen -> spawnt NICHT neu!
+                        f.eaten = true;
+                    } else {
+                        lives--;
+                        updateGameHud();
+                        if (lives <= 0) {
+                            isPlaying = false;
+                            const ov = document.getElementById('game-overlay');
+                            ov.classList.remove('hidden');
+                            document.getElementById('overlay-title').textContent = `${f.name.toUpperCase()} HAT DICH ERWISCHT! 🍻`;
+                            document.getElementById('overlay-subtitle').textContent = 'Versuch es gleich nochmal – schnapp dir zuerst Franz in den Ecken!';
+                            document.getElementById('overlay-btn').textContent = 'NOCHMAL SPIELEN ▶';
+                            return;
+                        } else {
+                            resetPositionsAfterHit();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            drawWiesnGame(timestamp);
+            rafId = requestAnimationFrame(gameLoop);
+        }
+
+        function updateGameHud() {
+            document.getElementById('hud-dots').textContent = collectedDots;
+            document.getElementById('hud-lives').textContent = '❤️'.repeat(Math.max(0, lives));
+        }
+
+        // ====================================================================
+        // VERSCHIEDENE OKTOBERFEST-STÄNDE & FAHRGESCHÄFTE ZEICHNEN
+        // ====================================================================
+        function getStallType(r, c) {
+            // Bestimmte Koordinaten für besondere Wiesn-Attraktionen:
+            if ((r === 2 && c === 2) || (r === 2 && c === 12) || (r === 11 && c === 2)) return 'riesenrad';
+            if ((r === 2 && c === 3) || (r === 2 && c === 11) || (r === 11 && c === 12)) return 'kettenkarussell';
+            if ((r === 5 && c === 2) || (r === 5 && c === 12) || (r === 9 && c === 2) || (r === 9 && c === 12)) return 'buechsenwerfen';
+            if ((r === 3 && c === 5) || (r === 3 && c === 9) || (r === 12 && c === 5)) return 'ochsenbraterei';
+            if ((r === 2 && c === 5) || (r === 2 && c === 9) || (r === 12 && c === 9)) return 'raeucherfisch';
+            return 'bierzelt'; // Klassische Bierzelte als Standard-Umrandung
+        }
+
+        function drawWiesnStall(ctx, px, py, r, c, time) {
+            const type = getStallType(r, c);
+            const cx = px + TILE / 2;
+            const cy = py + TILE / 2;
+
+            // Grundfläche
+            ctx.fillStyle = '#451a03';
+            ctx.fillRect(px + 1, py + 1, TILE - 2, TILE - 2);
+
+            if (type === 'riesenrad') {
+                // 🎡 RIESENRAD (Animiert!)
+                ctx.fillStyle = '#1e1b4b';
+                ctx.fillRect(px + 2, py + 2, TILE - 4, TILE - 4);
+                // Stützen
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy); ctx.lineTo(px + 6, py + TILE - 3);
+                ctx.moveTo(cx, cy); ctx.lineTo(px + TILE - 6, py + TILE - 3);
+                ctx.stroke();
+                // Rad
+                ctx.strokeStyle = '#facc15';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.arc(cx, cy - 1, 9, 0, Math.PI * 2);
+                ctx.stroke();
+                // Rotierende Gondeln
+                const angle = (time / 900) % (Math.PI * 2);
+                const colors = ['#ef4444', '#38bdf8', '#22c55e', '#f472b6'];
+                for (let i = 0; i < 4; i++) {
+                    const a = angle + (i * Math.PI / 2);
+                    const gx = cx + Math.cos(a) * 9;
+                    const gy = (cy - 1) + Math.sin(a) * 9;
+                    ctx.fillStyle = colors[i];
+                    ctx.fillRect(gx - 2, gy - 2, 4, 4);
+                }
+            } else if (type === 'kettenkarussell') {
+                // 🎠 KETTENKARUSSELL (Rot-Weißes Zirkusdach + rotierende Sitze)
+                const rot = (time / 500) % (Math.PI * 2);
+                ctx.fillStyle = '#31102f';
+                ctx.fillRect(px + 2, py + 2, TILE - 4, TILE - 4);
+                // Rot-weißes Runddach
+                for (let i = 0; i < 6; i++) {
+                    ctx.fillStyle = (i % 2 === 0) ? '#e11d48' : '#ffffff';
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, 11, rot + (i * Math.PI / 3), rot + ((i + 1) * Math.PI / 3));
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                ctx.fillStyle = '#facc15';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'buechsenwerfen') {
+                // 🥫 BÜCHSENWERFEN-BUDE (Rot-Gelbe Markise + Dosenpyramide)
+                for (let s = 0; s < 4; s++) {
+                    ctx.fillStyle = (s % 2 === 0) ? '#dc2626' : '#fde047';
+                    ctx.fillRect(px + 2 + s * 6.5, py + 2, 6.5, 7);
+                }
+                // Silberne Dosen-Pyramide
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillRect(px + 7, py + 16, 4, 5);
+                ctx.fillRect(px + 13, py + 16, 4, 5);
+                ctx.fillRect(px + 19, py + 16, 4, 5);
+                ctx.fillRect(px + 10, py + 11, 4, 5);
+                ctx.fillRect(px + 16, py + 11, 4, 5);
+                // Rote Wurfbälle auf der Theke
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(px + 8, py + 23, 3, 3);
+                ctx.fillRect(px + 19, py + 23, 3, 3);
+            } else if (type === 'ochsenbraterei') {
+                // 🐂 OCHSENBRATEREI (Holzbude + Feuergrill & Braten)
+                ctx.fillStyle = '#7c2d12';
+                ctx.fillRect(px + 2, py + 2, TILE - 4, 8);
+                // Warme Glut & Spießbraten
+                ctx.fillStyle = '#f97316';
+                ctx.fillRect(px + 6, py + 18, TILE - 12, 6);
+                ctx.fillStyle = '#facc15';
+                ctx.fillRect(px + 9, py + 20, TILE - 18, 3);
+                // Brauner Ochsenbraten am Spieß + Hörner-Emblem oben
+                ctx.fillStyle = '#a16207';
+                ctx.fillRect(px + 8, py + 12, TILE - 16, 6);
+                ctx.fillStyle = '#fef3c7';
+                ctx.fillRect(px + 7, py + 4, 4, 2);
+                ctx.fillRect(px + TILE - 11, py + 4, 4, 2);
+            } else if (type === 'raeucherfisch') {
+                // 🐟 RÄUCHERFISCHSTAND (Steckerlfisch-Bude)
+                ctx.fillStyle = '#0369a1';
+                ctx.fillRect(px + 2, py + 2, TILE - 4, 8);
+                // Gold-geräucherter Fisch in der Mitte
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.ellipse(cx - 1, cy + 3, 7, 3.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Schwanzflosse
+                ctx.beginPath();
+                ctx.moveTo(cx + 5, cy + 3);
+                ctx.lineTo(cx + 10, cy - 1);
+                ctx.lineTo(cx + 10, cy + 7);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                // 🍺 KLASSISCHES BIERZELT (Blau-Weißes Dach + Goldener Maßkrug)
+                const stripeW = (TILE - 4) / 4;
+                for (let s = 0; s < 4; s++) {
+                    ctx.fillStyle = (s % 2 === 0) ? '#0066b2' : '#ffffff';
+                    ctx.fillRect(px + 2 + s * stripeW, py + 2, stripeW, 8);
+                }
+                // Kleiner goldener Maßkrug mit Schaumkrone in jedem 2. Zelt
+                if ((r + c) % 2 === 0) {
+                    ctx.fillStyle = '#facc15';
+                    ctx.fillRect(cx - 3, cy + 1, 6, 7);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(cx - 3, cy - 1, 6, 2.5);
+                }
+            }
+
+            // Goldener Holzrahmen um jeden Stand
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(px + 1.5, py + 1.5, TILE - 3, TILE - 3);
+        }
+
+        function drawMiniPretzel(ctx, cx, cy) {
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 2.2;
+            ctx.beginPath();
+            ctx.arc(cx - 2.5, cy - 1, 3, 0, Math.PI * 2);
+            ctx.arc(cx + 2.5, cy - 1, 3, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(cx - 3, cy - 3, 1.5, 1.5);
+            ctx.fillRect(cx + 2, cy - 3, 1.5, 1.5);
+        }
+
+        function drawWiesnGame(time = 0) {
+            const ctx = wiesnCanvas.getContext('2d');
+            ctx.fillStyle = '#24130c';
+            ctx.fillRect(0, 0, wiesnCanvas.width, wiesnCanvas.height);
+
+            for (let r = 0; r < GRID; r++) {
+                for (let c = 0; c < GRID; c++) {
+                    const cell = map[r][c];
+                    const px = c * TILE;
+                    const py = r * TILE;
+
+                    if (cell === 1) {
+                        drawWiesnStall(ctx, px, py, r, c, time);
+                    } else if (cell === 0) {
+                        drawMiniPretzel(ctx, px + TILE / 2, py + TILE / 2);
+                    } else if (cell === 2) {
+                        drawSprite(ctx, 'franz', px + 1, py + 1, TILE - 2, false);
+                    }
+                }
+            }
+
+            // Freunde zeichnen (sofern noch nicht gefressen)
+            friends.forEach(f => {
+                if (f.eaten) return;
+                const px = f.x * TILE;
+                const py = f.y * TILE;
+                drawSprite(ctx, f.key, px + 1, py + 1, TILE - 2, powerTimeLeft > 0);
+
+                ctx.fillStyle = 'rgba(0,0,0,0.75)';
+                ctx.fillRect(px - 2, py - 9, TILE + 4, 9);
+                ctx.fillStyle = powerTimeLeft > 0 ? '#7dd3fc' : '#fde047';
+                ctx.font = 'bold 8px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(f.name, px + TILE / 2, py - 2);
+            });
+
+            // Prinzessin Stella im grünen Dirndl zeichnen
+            drawSprite(ctx, 'stella', stella.x * TILE + 1, stella.y * TILE + 1, TILE - 2, false);
+        }
+
+        function handleGameWin() {
+            isPlaying = false;
+            if (rafId) cancelAnimationFrame(rafId);
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+            }
+            const ov = document.getElementById('game-overlay');
+            ov.classList.remove('hidden');
+            document.getElementById('overlay-title').textContent = 'WIESN-SIEGERIN STELLA! 👑🥨';
+            document.getElementById('overlay-subtitle').textContent = 'Du hast alle Brezn eingesammelt und die ganze Crew ausgetrickst!';
+            const btn = document.getElementById('overlay-btn');
+            btn.textContent = 'WEITER ZUM QUIZ →';
+            btn.onclick = unlockStage2Quiz;
+        }
+
+        // ====================================================================
+        // 3. STUFE 2: DEIN NEUES 4-FRAGEN-QUIZ + FOTO 1, FOTO 2 & FOTO 3
+        // Hinweis für GitHub: Lege foto1.jpg, foto2.jpg und foto3.jpg einfach
+        // in denselben Ordner wie deine geschenk.html!
+        // ====================================================================
+        const QUIZ_DATA = [
+            {
+                q: "Frage 1: Welche Augenfarbe hat Franz?",
+                options: [
+                    "grün",
+                    "blau",
+                    "braun"
+                ],
+                correct: [0], // grün (R)
+                photo: null,
+                comment: "Richtig! Seine wunderschönen grünen Augen schauen nur dich an 💚"
+            },
+            {
+                q: "Frage 2: Was ist Wurmz Lieblingsspiel?",
+                options: [
+                    "Doktor-Rollenspiel",
+                    "Stellakitzeln",
+                    "Franzkitzeln"
+                ],
+                correct: [0, 1], // Doktor-Rollenspiel (R) & Stellakitzeln (R)
+                photo: null,
+                comment: "Vollkommen richtig! Das macht eindeutig am meisten Spaß 😘"
+            },
+            {
+                q: "Frage 3: Wer hat in dieser Situation gepupst?",
+                options: [
+                    "Stella",
+                    "Franz",
+                    "Jemand anderes"
+                ],
+                correct: [0], // Stella (R)
+                photo: "foto1.jpeg",
+                comment: "Erwischt, meine Prinzessin! 😂❤️"
+            },
+            {
+                q: "Frage 4: Wer ist das?",
+                options: [
+                    "Ein Zwerg",
+                    "Franz",
+                    "Jemand anderes"
+                ],
+                correct: [0], // Ein Zwerg (R)
+                photo: "foto2.jpeg",
+                comment: "100 Punkte! Eindeutig ein Zwerg 😄"
+            }
+        ];
+
+        let quizIdx = 0;
+
+        function unlockStage2Quiz() {
+            document.getElementById('pill-2').className = 'py-2.5 px-2 rounded-xl bg-rose-600 text-white shadow-sm flex items-center justify-center gap-1';
+            const sec = document.getElementById('section-stage-2');
+            sec.classList.remove('hidden');
+            document.getElementById('quiz-active-box').classList.remove('hidden');
+            document.getElementById('quiz-victory-box').classList.add('hidden');
+            sec.scrollIntoView({ behavior: 'smooth' });
+            quizIdx = 0;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            const item = QUIZ_DATA[quizIdx];
+            document.getElementById('quiz-badge').textContent = `Frage ${quizIdx + 1} / ${QUIZ_DATA.length}`;
+            document.getElementById('quiz-question').textContent = item.q;
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            // Foto einblenden bei Frage 3 (foto1.jpg) und Frage 4 (foto2.jpg)
+            const photoWrap = document.getElementById('quiz-photo-wrapper');
+            const photoImg = document.getElementById('quiz-photo-img');
+            if (item.photo) {
+                photoWrap.classList.remove('hidden');
+                photoImg.src = item.photo;
+            } else {
+                photoWrap.classList.add('hidden');
+            }
+
+            const optContainer = document.getElementById('quiz-options');
+            optContainer.innerHTML = '';
+            item.options.forEach((opt, i) => {
+                const b = document.createElement('button');
+                b.className = 'w-full text-left p-4 rounded-2xl bg-white hover:bg-rose-50 active:scale-[0.99] border-2 border-rose-200 font-bold text-sm sm:text-base text-rose-950 transition flex items-center justify-between shadow-xs';
+                b.innerHTML = `<span>${opt}</span><span class="text-rose-400 text-lg">○</span>`;
+                b.onclick = () => checkAnswer(i);
+                optContainer.appendChild(b);
+            });
+        }
+
+        function checkAnswer(selectedIdx) {
+            const item = QUIZ_DATA[quizIdx];
+            const fb = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('quiz-next-btn');
+            fb.classList.remove('hidden');
+
+            if (item.correct.includes(selectedIdx)) {
+                fb.className = 'p-4 rounded-2xl text-xs sm:text-sm font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
+                fb.textContent = '✅ ' + item.comment;
+                nextBtn.classList.remove('hidden');
+                if (quizIdx === QUIZ_DATA.length - 1) {
+                    nextBtn.textContent = 'QUIZ ABSCHLIESSEN 🎉';
+                } else {
+                    nextBtn.textContent = 'Weiter zur nächsten Frage →';
+                }
+            } else {
+                fb.className = 'p-4 rounded-2xl text-xs sm:text-sm font-semibold bg-rose-100 border border-rose-200 text-rose-800';
+                fb.textContent = 'Falsch geraten, meine Prinzessin! Probier nochmal eine andere Antwort 😘';
+            }
+        }
+
+        function nextQuizStep() {
+            quizIdx++;
+            if (quizIdx < QUIZ_DATA.length) {
+                renderQuiz();
+            } else {
+                showQuizSuccessScreen();
+            }
+        }
+
+        function showQuizSuccessScreen() {
+            document.getElementById('section-stage-2').classList.remove('hidden');
+            document.getElementById('quiz-active-box').classList.add('hidden');
+            const vicBox = document.getElementById('quiz-victory-box');
+            vicBox.classList.remove('hidden');
+            document.getElementById('quiz-badge').textContent = 'Geschafft! 🏆';
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 100, spread: 75, origin: { y: 0.6 } });
+            }
+            vicBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ====================================================================
+        // 4. STUFE 3: RUBBELLOSE (OPTIMIERT FÜR HANDY-TOUCH & DESKTOP)
+        // ====================================================================
+        function unlockStage3ScratchCards() {
+            document.getElementById('pill-3').className = 'py-2.5 px-2 rounded-xl bg-rose-600 text-white shadow-sm flex items-center justify-center gap-1';
+            const sec = document.getElementById('section-stage-3');
+            sec.classList.remove('hidden');
+            sec.scrollIntoView({ behavior: 'smooth' });
+
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            }
+
+            setTimeout(() => {
+                setupScratchCanvas('scratch-1', 'HIER FREIRUBBELN ✨');
+                setupScratchCanvas('scratch-2', 'HIER FREIRUBBELN ✨');
+                setupScratchCanvas('scratch-3', 'HIER FREIRUBBELN ✨');
+            }, 150);
+        }
+
+        function setupScratchCanvas(id, label) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width || 280;
+            canvas.height = rect.height || 192;
+
+            const ctx = canvas.getContext('2d');
+            const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            grad.addColorStop(0, '#d4af37');
+            grad.addColorStop(0.5, '#fef08a');
+            grad.addColorStop(1, '#b45309');
+
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#4c0519';
+            ctx.font = 'bold 13px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, canvas.width / 2, canvas.height / 2 + 5);
+
+            let drawing = false;
+            function rub(clientX, clientY) {
+                const r = canvas.getBoundingClientRect();
+                const x = clientX - r.left;
+                const y = clientY - r.top;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 26, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            canvas.addEventListener('pointerdown', (e) => {
+                drawing = true;
+                rub(e.clientX, e.clientY);
+            });
+            canvas.addEventListener('pointermove', (e) => {
+                if (!drawing) return;
+                e.preventDefault();
+                rub(e.clientX, e.clientY);
+            });
+            window.addEventListener('pointerup', () => { drawing = false; });
+        }
+
+        // Initialisierung beim Laden
+        renderAllPreviews();
+        initWiesnBoard();
+    </script>
+</body>
+</html>
