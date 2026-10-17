@@ -473,27 +473,28 @@
 
         // Dynamische Berechnung auf den kommenden Sonntag um 18:00:00 Uhr
         // (Funktioniert unabhängig davon, welches Jahr auf dem Gerät eingestellt ist!)
-        function getUpcomingSunday1800() {
+        // Dynamische Berechnung auf den kommenden Sonntag um 14:00:00 Uhr
+        function getUpcomingSunday1400() {
             const now = new Date();
             const currentYear = now.getFullYear();
             
-            // Falls wir im Oktober sind, nimm den 18. Oktober des aktuellen Geräte-Jahres um 18:00 Uhr:
+            // Falls wir im Oktober sind, nimm den 18. Oktober um 14:00 Uhr:
             if (now.getMonth() === 9 && now.getDate() <= 18) {
-                const oct18 = new Date(currentYear, 9, 18, 18, 0, 0, 0);
+                const oct18 = new Date(currentYear, 9, 18, 14, 0, 0, 0);
                 if (oct18 > now) {
                     return {
                         start: new Date(currentYear, 9, 15, 20, 0, 0, 0),
                         target: oct18,
-                        label: `Sonntag, 18. Oktober um 18:00 Uhr`
+                        label: `Sonntag, 18. Oktober um 14:00 Uhr`
                     };
                 }
             }
 
-            // Fallback: Berechne automatisch den nächsten Sonntag um 18:00 Uhr
+            // Fallback: Berechne automatisch den nächsten Sonntag um 14:00 Uhr
             const target = new Date(now);
             const daysUntilSunday = (7 - now.getDay()) % 7;
-            target.setDate(now.getDate() + (daysUntilSunday === 0 && now.getHours() >= 18 ? 7 : daysUntilSunday));
-            target.setHours(18, 0, 0, 0);
+            target.setDate(now.getDate() + (daysUntilSunday === 0 && now.getHours() >= 14 ? 7 : daysUntilSunday));
+            target.setHours(14, 0, 0, 0);
 
             const start = new Date(target);
             start.setDate(target.getDate() - 3);
@@ -503,13 +504,13 @@
             return {
                 start: start,
                 target: target,
-                label: `Sonntag, ${dateStr} um 18:00 Uhr`
+                label: `Sonntag, ${dateStr} um 14:00 Uhr`
             };
         }
 
-        const schedule = getUpcomingSunday1800();
+        const schedule = getUpcomingSunday1400();
         const startDate = schedule.start;
-        const targetDate = new Date();
+        const targetDate = schedule.target;
         let isUnlocked = false;
 
         document.getElementById('delivery-date-subtitle').textContent =
